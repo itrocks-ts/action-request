@@ -1,27 +1,30 @@
-import { StringObject, Type } from '@itrocks/class-type'
-import { Request }            from '@itrocks/request-response'
-import { dataSource, Entity } from '@itrocks/storage'
-import formats                from './formats'
+import { isAnyFunctionOrType }      from '@itrocks/class-type'
+import { StringObject, Type }       from '@itrocks/class-type'
+import { Request as ServerRequest } from '@itrocks/request-response'
+import { dataSource, Entity }       from '@itrocks/storage'
+import formats                      from './formats'
 
 type Dependencies = {
-	getModule: (route: string) => Type | undefined
+	getModule: (route: string) => Function | Type | undefined
 }
 
 const depends: Dependencies = {
 	getModule: route => route ? require(route).default : undefined
 }
 
-export { ActionRequest }
-export default class ActionRequest<T extends object = object>
+export { Request }
+export default class Request<T extends object = object>
 {
-	action               = ''
-	format               = ''
+	action = ''
+	format = ''
 	ids:     string[]    = []
 	objects: Entity<T>[] = []
-	route                = ''
+	request: ServerRequest
+	route  = ''
 
-	constructor(public request: Request)
+	constructor(request: ServerRequest)
 	{
+		this.request = request
 		Object.assign(this, this.parsePath())
 	}
 
@@ -35,7 +38,7 @@ export default class ActionRequest<T extends object = object>
 		const type = depends.getModule(this.route)
 		if (!type) return class {} as Type<T>
 
-		if ((typeof type)[0] !== 'f') {
+		if (!isAnyFunctionOrType(type)) {
 			throw 'Module ' + this.route.substring(1) + ' default is not a class'
 		}
 		Object.defineProperty(this, 'type', { value: type })
@@ -53,7 +56,7 @@ export default class ActionRequest<T extends object = object>
 		}))
 	}
 
-	parsePath(): Partial<ActionRequest<T>>
+	parsePath(): Partial<Request<T>>
 	{
 		const route  = '(?<route>(?:/[A-Za-z][A-Za-z0-9]*)+)'
 		const id     = '(?:/(?<id>(?!,)(?:,?[0-9]+)+))'
@@ -68,7 +71,7 @@ export default class ActionRequest<T extends object = object>
 			return {}
 		}
 		type Groups = { action?: string, format?: string, id?: string, route: string }
-		const path: Partial<ActionRequest<T>> & Groups = match.groups as Groups
+		const path: Partial<Request<T>> & Groups = match.groups as Groups
 
 		// ids <- id
 		path.ids = path.id?.split(',') ?? []
