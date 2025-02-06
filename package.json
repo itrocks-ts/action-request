@@ -53,7 +53,7 @@
 		"request",
 		"route"
 	],
-	"license": "ISC",
+	"license": "LGPL-3.0-or-later",
 	"name": "@itrocks/action-request",
 	"repository": {
 		"type": "git",
@@ -66,5 +66,5 @@
 		"test": "jest"
 	},
 	"types": "./esm/action-request.d.ts",
-	"version": "0.0.1"
+	"version": "0.0.2"
 }
