@@ -1,0 +1,70 @@
+{
+	"author": {
+		"name": "Baptiste Pillot",
+		"email": "baptiste@pillot.fr"
+	},
+	"dependencies": {
+		"@itrocks/class-type": "latest",
+		"@itrocks/request-response": "latest",
+		"@itrocks/storage": "latest"
+	},
+	"description": "Domain-oriented action request with path decoding, business object preloading, and action extracting",
+	"devDependencies": {
+		"@types/jest": "^29.5",
+		"@types/node": "^22.10",
+		"jest": "^29.7",
+		"ts-jest": "^29.2",
+		"typescript": "^5.6"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"exports": {
+		"import": "./esm/action-request.js",
+		"require": "./cjs/action-request.js"
+	},
+	"files": [
+		"LICENSE",
+		"README.md",
+		"*/*.d.ts",
+		"*/*.js",
+		"!*/esm.*"
+	],
+	"homepage": "https://it.rocks",
+	"jest": {
+		"preset": "ts-jest",
+		"testEnvironment": "node",
+		"testMatch": ["**/?(*.)+(spec|test).ts"]
+	},
+	"keywords": [
+		"action",
+		"backend",
+		"business",
+		"decode",
+		"decoding",
+		"domain",
+		"driven",
+		"extraction",
+		"it.rocks",
+		"object",
+		"path",
+		"preloading",
+		"processing",
+		"request",
+		"route"
+	],
+	"license": "ISC",
+	"name": "@itrocks/action-request",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/itrocks-ts/action-request.git"
+	},
+	"scripts": {
+		"build": "npm run build:cjs && npm run build:esm",
+		"build:cjs": "tsc -p tsconfig.cjs.json",
+		"build:esm": "tsc -p tsconfig.esm.json && node esm/esm",
+		"test": "jest"
+	},
+	"types": "./esm/action-request.d.ts",
+	"version": "0.0.1"
+}
