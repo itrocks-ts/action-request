@@ -17,10 +17,11 @@ export default class Request<T extends object = object>
 {
 	action = ''
 	format = ''
-	ids:     string[]    = []
-	objects: Entity<T>[] = []
+	ids:     string[] = []
 	request: ServerRequest
 	route  = ''
+
+	private _objects?: (Entity<T>)[]
 
 	constructor(request: ServerRequest)
 	{
@@ -28,32 +29,29 @@ export default class Request<T extends object = object>
 		Object.assign(this, this.parsePath())
 	}
 
-	get object() : Entity<T> | undefined
+	async getObject() : Promise<Entity<T> | undefined>
 	{
-		return this.objects[0]
-	}
-
-	get type(): Type<T>
-	{
-		const type = depends.getModule(this.route)
-		if (!type) return class {} as Type<T>
-
-		if (!isAnyFunctionOrType(type)) {
-			throw 'Module ' + this.route.substring(1) + ' default is not a class'
+		if (!this._objects) {
+			const id      = this.ids[0]
+			const object  = id && await dataSource().read(this.type, id)
+			this._objects = object ? [object] : []
 		}
-		Object.defineProperty(this, 'type', { value: type })
-		return type as Type<T>
+		return this._objects[0]
 	}
 
-	async getObjects()
+	async getObjects(): Promise<Entity<T>[]>
 	{
-		this.objects = []
-		const type = this.type
-		return Promise.all(this.ids.map(async id => {
-			const object = await dataSource().read(type, id)
-			this.objects.push(object)
-			return object
-		}))
+		if (!this._objects) {
+			this._objects = []
+		}
+		if (this._objects.length >= this.ids.length) {
+			return this._objects
+		}
+		const data = dataSource()
+		for (const index in this.ids.slice(this._objects.length)) {
+			this._objects[index] = await data.read(this.type, this.ids[index])
+		}
+		return Promise.all(this._objects)
 	}
 
 	parsePath(): Partial<Request<T>>
@@ -67,9 +65,7 @@ export default class Request<T extends object = object>
 		const method  = request.method
 		const regExp  = `^${route}${id}?${action}?${format}?$`
 		const match   = request.path.replaceAll('-', '_').match(new RegExp(regExp))
-		if (!match?.groups) {
-			return {}
-		}
+			?? { groups: { route: '' }}
 		type Groups = { action?: string, format?: string, id?: string, route: string }
 		const path: Partial<Request<T>> & Groups = match.groups as Groups
 
@@ -108,6 +104,10 @@ export default class Request<T extends object = object>
 			}
 		}
 
+		if (path.route === '') {
+			return path
+		}
+
 		if (!path.action) {
 			// action <- method
 			const method0 = method[0]
@@ -140,24 +140,36 @@ export default class Request<T extends object = object>
 			}
 		}
 
-		const dataId = request.data.id
+		const dataId = request.data.id as string | StringObject | string[]
 		if (dataId) {
 			delete request.data.id
 			if (typeof dataId === 'string') {
 				path.ids.push(...dataId.split(','))
 			}
 			else if (Array.isArray(dataId)) {
-				path.ids.push(...(dataId satisfies string[]))
+				path.ids.push(...dataId)
 			}
 			else if (typeof dataId === 'object') {
-				path.ids.push(...Object.values(dataId as StringObject))
+				path.ids.push(...Object.values(dataId))
 			}
 			else {
 				request.data.id = dataId
 			}
 		}
 
-		return path.route ? path : {}
+		return path
+	}
+
+	get type(): Type<T>
+	{
+		const type = depends.getModule(this.route)
+		if (!type) return class {} as Type<T>
+
+		if (!isAnyFunctionOrType(type)) {
+			throw 'Module ' + this.route.substring(1) + ' default is not a class'
+		}
+		Object.defineProperty(this, 'type', { value: type })
+		return type as Type<T>
 	}
 
 }
