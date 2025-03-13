@@ -56,15 +56,15 @@ export default class Request<T extends object = object>
 
 	parsePath(): Partial<Request<T>>
 	{
-		const route  = '(?<route>(?:/[A-Za-z][A-Za-z0-9]*)+)'
+		const route  = '(?<route>(?:/[A-Za-z][A-Za-z0-9-]*)+)'
 		const id     = '(?:/(?<id>(?!,)(?:,?[0-9]+)+))'
-		const action = '(?:/(?<action>[A-Za-z]+))'
-		const format = '(?:/(?<format>[A-Za-z]+))'
+		const action = '(?:/(?<action>[A-Za-z-]+))'
+		const format = '(?:/(?<format>[A-Za-z-]+))'
 
 		const request = this.request
 		const method  = request.method
 		const regExp  = `^${route}${id}?${action}?${format}?$`
-		const match   = request.path.replaceAll('-', '_').match(new RegExp(regExp))
+		const match   = request.path.match(new RegExp(regExp))
 			?? { groups: { route: '' }}
 		type Groups = { action?: string, format?: string, id?: string, route: string }
 		const path: Partial<Request<T>> & Groups = match.groups as Groups
