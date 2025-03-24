@@ -2,7 +2,7 @@ import { isAnyFunctionOrType }      from '@itrocks/class-type'
 import { StringObject, Type }       from '@itrocks/class-type'
 import { Request as ServerRequest } from '@itrocks/request-response'
 import { dataSource, Entity }       from '@itrocks/storage'
-import formats                      from './formats'
+import { formats }                  from './formats'
 
 type Dependencies = {
 	getModule: (route: string) => Function | Type | undefined
@@ -12,8 +12,7 @@ const depends: Dependencies = {
 	getModule: route => route ? require(route).default : undefined
 }
 
-export { Request }
-export default class Request<T extends object = object>
+export class Request<T extends object = object>
 {
 	action = ''
 	format = ''

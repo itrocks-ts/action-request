@@ -1,5 +1,5 @@
 
-export default [
+export const formats = [
 	['csv',  'text/csv'],
 	['html', 'text/html'],
 	['json', 'application/json'],
