@@ -1,4 +1,5 @@
 import { isAnyFunctionOrType }      from '@itrocks/class-type'
+import { isAnyType }                from '@itrocks/class-type'
 import { StringObject, Type }       from '@itrocks/class-type'
 import { Request as ServerRequest } from '@itrocks/request-response'
 import { dataSource, Entity }       from '@itrocks/storage'
@@ -9,7 +10,11 @@ type Dependencies = {
 }
 
 const depends: Dependencies = {
-	getModule: route => route ? (require(route).default ?? Object.values(require(route))[0]) : undefined
+	getModule: function(route) {
+		if (!route) return
+		const module = require(route)
+		return module.default ?? Object.values(module).find(type => isAnyType(type))
+	}
 }
 
 export class Request<T extends object = object>

@@ -34,7 +34,9 @@
 	"jest": {
 		"preset": "ts-jest",
 		"testEnvironment": "node",
-		"testMatch": ["**/?(*.)+(spec|test).ts"]
+		"testMatch": [
+			"**/?(*.)+(spec|test).ts"
+		]
 	},
 	"keywords": [
 		"action",
@@ -66,5 +68,5 @@
 		"test": "jest"
 	},
 	"types": "./esm/action-request.d.ts",
-	"version": "0.0.7"
+	"version": "0.0.8"
 }
