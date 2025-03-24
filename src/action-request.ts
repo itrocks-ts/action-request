@@ -9,7 +9,7 @@ type Dependencies = {
 }
 
 const depends: Dependencies = {
-	getModule: route => route ? require(route).default : undefined
+	getModule: route => route ? (require(route).default ?? Object.values(require(route))[0]) : undefined
 }
 
 export class Request<T extends object = object>
