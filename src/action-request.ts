@@ -68,7 +68,7 @@ export class Request<T extends object = object>
 		const request = this.request
 		const method  = request.method
 		const regExp  = `^${route}${id}?${action}?${format}?$`
-		const match   = request.path.match(new RegExp(regExp))
+		const match   = request.path.match(RegExp(regExp))
 			?? { groups: { route: '' }}
 		type Groups = { action?: string, format?: string, id?: string, route: string }
 		const path: Partial<Request<T>> & Groups = match.groups as Groups
