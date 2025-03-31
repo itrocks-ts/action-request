@@ -45,9 +45,7 @@ export class Request<T extends object = object>
 
 	async getObjects(): Promise<Entity<T>[]>
 	{
-		if (!this._objects) {
-			this._objects = []
-		}
+		this._objects ??= []
 		if (this._objects.length >= this.ids.length) {
 			return this._objects
 		}
