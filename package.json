@@ -68,5 +68,5 @@
 		"test": "jest"
 	},
 	"types": "./esm/action-request.d.ts",
-	"version": "0.0.11"
+	"version": "0.0.12"
 }

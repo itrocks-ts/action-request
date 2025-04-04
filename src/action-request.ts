@@ -170,7 +170,7 @@ export class Request<T extends object = object>
 		if (!isAnyFunctionOrType(type)) {
 			throw 'Module ' + this.route.substring(1) + ' default is not a class'
 		}
-		Object.defineProperty(this, 'type', { value: type })
+		Object.defineProperty(this, 'type', { configurable: true, enumerable: false, value: type, writable: true })
 		return type as Type<T>
 	}
 
