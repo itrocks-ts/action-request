@@ -144,7 +144,6 @@ export class Request<T extends object = object>
 
 		const dataId = request.data.id as string | StringObject | string[]
 		if (dataId) {
-			delete request.data.id
 			if (typeof dataId === 'string') {
 				path.ids.push(...dataId.split(','))
 			}
@@ -153,9 +152,6 @@ export class Request<T extends object = object>
 			}
 			else if (typeof dataId === 'object') {
 				path.ids.push(...Object.values(dataId))
-			}
-			else {
-				request.data.id = dataId
 			}
 		}
 
