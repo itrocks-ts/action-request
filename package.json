@@ -10,11 +10,11 @@
 	},
 	"description": "Domain-oriented action request with path decoding, business object preloading, and action extracting",
 	"devDependencies": {
-		"@types/jest": "^29.5",
-		"@types/node": "^22.10",
-		"jest": "^29.7",
-		"ts-jest": "^29.2",
-		"typescript": "~5.8"
+		"@types/jest": "^30.0",
+		"@types/node": "^24.10",
+		"jest": "^30.2",
+		"ts-jest": "^29.4",
+		"typescript": "~5.9"
 	},
 	"engines": {
 		"node": ">=18"
@@ -68,5 +68,5 @@
 		"test": "jest"
 	},
 	"types": "./esm/action-request.d.ts",
-	"version": "0.0.14"
+	"version": "0.0.15"
 }
