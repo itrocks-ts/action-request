@@ -110,7 +110,7 @@ export class Request<T extends object = object>
 			return path
 		}
 
-		if (!path.action) {
+		if (!path.action && isAnyType(depends.getModule(path.route))) {
 			// action <- method
 			const method0 = method[0]
 			if (path.ids.length) {
@@ -164,7 +164,7 @@ export class Request<T extends object = object>
 		if (!type) return class {} as Type<T>
 
 		if (!isAnyFunctionOrType(type)) {
-			throw 'Module ' + this.route.substring(1) + ' default is not a class'
+			throw 'Module ' + this.route.substring(1) + ' is not a class or function'
 		}
 		Object.defineProperty(this, 'type', { configurable: true, enumerable: false, value: type, writable: true })
 		return type as Type<T>
