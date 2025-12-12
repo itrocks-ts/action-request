@@ -33,6 +33,11 @@ export class Request<T extends object = object>
 		Object.assign(this, this.parsePath())
 	}
 
+	get data()
+	{
+		return this.request.data
+	}
+
 	async getObject() : Promise<Entity<T> | undefined>
 	{
 		if (!this._objects) {
