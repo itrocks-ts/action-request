@@ -175,6 +175,15 @@ export class Request<T extends object = object>
 		return type as Type<T>
 	}
 
+	set type(type: Type<T>)
+	{
+		if (this._objects) {
+			console.error(this._objects)
+			throw "Can't force type when objets already exist"
+		}
+		Object.defineProperty(this, 'type', { configurable: true, enumerable: false, value: type, writable: true })
+	}
+
 }
 
 export { formats }
