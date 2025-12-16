@@ -25,7 +25,7 @@ export class Request<T extends object = object>
 	request: ServerRequest
 	route  = ''
 
-	private _objects?: (Entity<T>)[]
+	private _objects?: (Entity<T> | T)[]
 
 	constructor(request: ServerRequest)
 	{
@@ -38,7 +38,7 @@ export class Request<T extends object = object>
 		return this.request.data
 	}
 
-	async getObject() : Promise<Entity<T> | undefined>
+	async getObject() : Promise<Entity<T> | T | undefined>
 	{
 		if (!this._objects) {
 			const id      = this.ids[0]
@@ -48,7 +48,7 @@ export class Request<T extends object = object>
 		return this._objects[0]
 	}
 
-	async getObjects(): Promise<Entity<T>[]>
+	async getObjects(): Promise<(Entity<T> | T)[]>
 	{
 		this._objects ??= []
 		if (this._objects.length >= this.ids.length) {
@@ -59,6 +59,28 @@ export class Request<T extends object = object>
 			this._objects[index] = await data.read(this.type, this.ids[index])
 		}
 		return Promise.all(this._objects)
+	}
+
+	setObject(object: T)
+	{
+		if (this._objects) {
+			console.error(this._objects)
+			throw "Can't force object when objets already exist"
+		}
+		if (!this._objects) {
+			this._objects = [object]
+		}
+	}
+
+	setObjects(objects: T[])
+	{
+		if (this._objects) {
+			console.error(this._objects)
+			throw "Can't force objects when objets already exist"
+		}
+		if (!this._objects) {
+			this._objects = objects
+		}
 	}
 
 	parsePath(): Partial<Request<T>>
