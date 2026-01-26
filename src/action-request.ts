@@ -6,15 +6,24 @@ import { dataSource, Entity }       from '@itrocks/storage'
 import { formats }                  from './formats'
 
 type Dependencies = {
-	getModule: (route: string) => Function | Type | undefined
+	getModule:      (route: string) => Function | Type | undefined,
+	isDomainObject: (object: any) => boolean
 }
 
 const depends: Dependencies = {
-	getModule: function(route) {
+
+	getModule: function(route)
+	{
 		if (!route) return
 		const module = require(route)
 		return module.default ?? Object.values(module).find(type => isAnyType(type))
+	},
+
+	isDomainObject: function(object)
+	{
+		return isAnyType(object)
 	}
+
 }
 
 export class Request<T extends object = object>
@@ -137,7 +146,7 @@ export class Request<T extends object = object>
 			return path
 		}
 
-		if (!path.action && isAnyType(depends.getModule(path.route))) {
+		if (!path.action && !depends.isDomainObject(depends.getModule(path.route))) {
 			// action <- method
 			const method0 = method[0]
 			if (path.ids.length) {
