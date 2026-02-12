@@ -146,35 +146,37 @@ export class Request<T extends object = object>
 			return path
 		}
 
-		if (!path.action && !depends.isDomainObject(depends.getModule(path.route))) {
-			// action <- method
-			const method0 = method[0]
-			if (path.ids.length) {
-				switch (method0) {
-					case 'D': path.action = 'delete'; break
-					case 'G': path.action = 'output'; break
-					case 'P': path.action = 'save'
+		if (!path.action) {
+			if (depends.isDomainObject(depends.getModule(path.route))) {
+				// action <- method
+				const method0 = method[0]
+				if (path.ids.length) {
+					switch (method0) {
+						case 'D': path.action = 'delete'; break
+						case 'G': path.action = 'output'; break
+						case 'P': path.action = 'save'
+					}
 				}
-			}
-			else if ((method0 === 'P') && (path.format === 'json')) {
-				path.action = 'save'
-				if (path.route.endsWith('/save')) {
-					path.route = path.route.substring(0, path.route.lastIndexOf('/'))
+				else if ((method0 === 'P') && (path.format === 'json')) {
+					path.action = 'save'
+					if (path.route.endsWith('/save')) {
+						path.route = path.route.substring(0, path.route.lastIndexOf('/'))
+					}
+				}
+				// action <- default
+				else {
+					switch (method0) {
+						case 'D': path.action = 'delete'; break
+						case 'G': path.action = 'list';   break
+						case 'P': path.action = 'save'
+					}
 				}
 			}
 			// action <- route
-			else if (path.route.lastIndexOf('/') > 0) {
+			else {
 				const position = path.route.lastIndexOf('/')
 				path.action    = path.route.substring(position + 1)
 				path.route     = path.route.substring(0, position)
-			}
-			// action <- default
-			else {
-				switch (method0) {
-					case 'D': path.action = 'delete'; break
-					case 'G': path.action = 'list';   break
-					case 'P': path.action = 'save'
-				}
 			}
 		}
 
