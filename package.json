@@ -17,7 +17,7 @@
 		"typescript": "^6.0"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=24"
 	},
 	"exports": "./cjs/action-request.js",
 	"files": [
@@ -61,5 +61,5 @@
 		"build": "tsc",
 		"test": "jest"
 	},
-	"version": "0.1.7"
+	"version": "0.1.8"
 }
