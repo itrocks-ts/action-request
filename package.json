@@ -10,11 +10,8 @@
 	},
 	"description": "Domain-oriented action request with path decoding, business object preloading, and action extracting",
 	"devDependencies": {
-		"@types/jest": "^30.0",
 		"@types/node": "^24.10",
-		"jest": "^30.2",
-		"ts-jest": "^29.4",
-		"typescript": "^6.0"
+		"typescript": "^7.0"
 	},
 	"engines": {
 		"node": ">=24"
@@ -27,13 +24,6 @@
 		"!*.map"
 	],
 	"homepage": "https://it.rocks",
-	"jest": {
-		"preset": "ts-jest",
-		"testEnvironment": "node",
-		"testMatch": [
-			"**/?(*.)+(spec|test).ts"
-		]
-	},
 	"keywords": [
 		"action",
 		"backend",
@@ -59,7 +49,7 @@
 	},
 	"scripts": {
 		"build": "tsc",
-		"test": "jest"
+		"test": "npm run build && node --test --test-isolation=none test/*.test.js"
 	},
-	"version": "0.1.8"
+	"version": "0.1.9"
 }
